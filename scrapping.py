@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup # Biblioteca para Webscraping
 import requests # Biblioteca para acessar sites reais
 
 def encontra_ativos():
-    with open("C:/Users/otavi/Documents/Fisica/carteira fernando.html", 'r') as html_file: # para teste: abrindo um arquivo local
+    with open("C:/Users/otavi/Downloads/Repositório/A2-IC-Python/Carteira Fernando.html", 'r') as html_file: # para teste: abrindo um arquivo local
         content = html_file.read()
         #html_text = requests.get(url).text  Real projeto abrir um url
         soup = BeautifulSoup(content, 'lxml')

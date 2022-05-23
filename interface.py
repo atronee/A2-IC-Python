@@ -1,3 +1,5 @@
+import scrapping
+
 def interface():
     escolha = None
     while escolha != 2:
@@ -16,9 +18,8 @@ def interface():
             if verifica_url(url):
                 print("pode chamar o módulo")
                 #Caso exista, o módulo que desenvolve o excel com as informações será chamado
-                break
-            else:
-                print("Desculpa, a carteira não foi encontrada")
+                ativos = scrapping.encontra_ativos(url)
+
         elif escolha == 2:
            break
         else:
@@ -48,8 +49,12 @@ def verifica_int(msg):
             break #Se ele tiver sucesso, o programa segue normalmente.
     return inteiro
 
-
 def verifica_url(url):
-    pass
+    try: #O programa tenta abrir e fechar o arquivo que o usuário passou.
+        scrapping.encontra_ativos(url)
+    except:#Se não consegui, ele retorna falso e volta para o menu.
+        print(f"Não foi encontrada uma carteira na url passada.")
+        return False
+    else: 
+        return True
 
-interface()

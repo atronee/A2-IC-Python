@@ -1,0 +1,98 @@
+*{
+    text-align: center; /*deixa o título centralizado*/
+    margin:0; /*Deixa todo conteúdo colado nos cantos*/
+    padding: 0; /*Deixa todo conteúdo sem preenchimento (espaçamento) inicialmente*/  
+    font-family: 'Lato', sans-serif; /*a fonte padrão do site, se alguém achar uma mais bonita, só falar*/
+} 
+
+/*==========MENU==========*/
+
+header{
+    background-color: #000000; /*cor de fundo do menu*/
+    opacity: 90%; /*nível de transparência da cor de fundo do menu*/
+    padding: 20px 0; /*preenchimento - top e bottom: 20px; right e leff:0px*/
+    position: fixed; /*deixar o header fixo ao rolar a página*/
+    width: 100%; /*ocupar toda a largura disponível*/
+    height: 40px; /*altura do header*/
+}
+
+#menu{
+    height: 40px; /*para ficar com a mesma altura do header e encaixar certinho a centralização*/
+    display: flex; /*Exibe os elementos como um contêiner flexível, para que todos fiquem um ao lado do outro*/
+    justify-content: space-around; /*Alinhar os itens flexíveis no centro do contêiner*/
+    align-items: center; /*align-items: Alinha os itens na vertical*/ 
+}				
+
+.logo_menu{
+    width: 130px; /*largura da imagem*/
+}
+
+nav li{
+    display: inline; /*deixa os itens do menu um ao lado do outro*/ 
+}
+
+.item_menu{
+    padding: 20px; /*Espaçamento entre os itens*/
+    text-decoration: none; /*Tirar a decoração de link*/
+    font-size: 18px; /*Tamanho da fonte*/
+    font-weight: bold; /*Deixar a fonte em negrito*/
+    color:#00bfff /*Cor da fonte*/
+}
+.item_menu:hover{
+    color:#ffffff /*Ao passar o mouse em um item do menu, ele ficará branco*/
+}
+
+#capa{
+    width: 100%; /*toda largura da página*/
+    height: 50%; /*metade da página como altura*/
+}
+
+/* CONTEÚDO DO SITE */
+
+.titulo-centralizado{
+    padding: 100px 0px 0px;
+    margin: 0px 0px 20px; /*margem de 40px no topo, 0px nos lados e 20px para baixo*/ 
+	text-align: center; /*deixa o título centralizado*/
+    text-transform: uppercase; /*deixa o título ASSIM*/
+    letter-spacing: 5px; /*leve espaçamento entre as letras do título*/   
+    font-weight: bold; /*negrito*/
+    font-style: italic; /*itálico*/
+    font-size: 40px /*tamanho da fonte*/
+}
+
+h2 {
+    padding:20px 0 0 0; /*Deixa todo conteúdo sem preenchimento (espaçamento) inicialmente*/    
+}
+
+.estilo-tabela{
+    width: 600px; /*Largura da tabela*/
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); /*sombra*/
+    margin-left: auto;
+    margin-right: auto; /*os dois margin servem para centralizar a tabela*/
+    margin-top: 25px; /*distânciamento entre a tabela e o paragráfo*/
+}
+
+.estilo-tabela thead tr {
+    background-color:#00bfff; /*cor de fundo do cabeçalho*/
+    color: #ffffff; /*cor do texto do cabeçalho*/
+    text-align: center; /*alinhar o centro*/
+}
+.estilo-tabela th,
+.estilo-tabela td {
+    padding: 15px 30px; /*espaçamento das linhas do corpo da tabela*/
+}
+
+.estilo-tabela tbody tr {
+    border-bottom: 1px solid #dddddd; /*uma pequena borda entre as linhas*/
+}
+
+.estilo-tabela tbody tr:hover{
+    color: #3700ff; /*cor de azul claro ao passar o mouse sobre as linhas*/
+}
+.estilo-tabela tbody td:hover{
+    color: #3700ff; /*cor de azul escuro ao passar o mouse sobre os itens*/
+}
+
+.estilo-tabela tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3; /*Melhor forma que encontrei de fazer cada linha de uma cor diferente*/
+}

@@ -61,7 +61,7 @@ for i in range(num_acoes):  # Iterador das ações
     ws.cell(row=(6 + i), column=1, value=acoes[i])  # Nome da ação
     ws.cell(row=(6 + i), column=2, value=carteira["Ações"][acoes[i]])  # Quantidade na carteira
     cotacao = ws.cell(row=(6 + i), column=3, value=cota["Ações"][acoes[i]])  # Valor atual da ação
-    cotacao.number_format = "R$#,##0.00" # Formato de moeda real
+    cotacao.number_format = "R$#,##0.00"  # Formato de moeda real
     contrib = ws.cell(row=(6 + i), column=4, value="=B" + str(6 + i) + "*C" + str(6 + i))  # Contribuição da ação (valor*quantidade)
     contrib.number_format = "R$#,##0.00" # Formato de moeda real
 
@@ -70,9 +70,9 @@ for i in range(num_moedas):  # Iterador de moedas
     ws.cell(row=(6 + i), column=5, value=moedas[i])  # Nome da moeda
     ws.cell(row=(6 + i), column=6, value=carteira["Moedas"][moedas[i]])  # Quantidade na carteira
     cotacao = ws.cell(row=(6 + i), column=7, value=cota["Moedas"][moedas[i]])  # Valor atual da moeda
-    cotacao.number_format = "R#,##0.00" # Formato de moeda real
+    cotacao.number_format = "R$#,##0.00" # Formato de moeda real
     contrib = ws.cell(row=(6 + i), column=8, value="=F" + str(6 + i) + "*G" + str(6 + i))  # Contribuição da moeda (valor*quantidade)
-    contrib.number_format = "R#,##0.00" # Formato de moeda real
+    contrib.number_format = "R$#,##0.00" # Formato de moeda real
 
 # Apresentação dos totais
 num_linhas = max(num_acoes, num_moedas)
@@ -80,25 +80,25 @@ num_linhas = max(num_acoes, num_moedas)
 criar_titulo(6 + num_linhas, 1, 6 + num_linhas, 1, "Total Ações")
 ws.cell(row=(6 + num_linhas), column=2, value="=SUM(B6:B" + str(5 + num_linhas) + ")")  # Soma das quantidades de ações
 soma_val = ws.cell(row=(6 + num_linhas), column=3, value="=SUM(C6:C" + str(5 + num_linhas) + ")")  # Soma dos valores das ações
-soma_val.number_format = "R#,##0.00" # Formato de moeda real
+soma_val.number_format = "R$#,##0.00" # Formato de moeda real
 soma_contrib = ws.cell(row=(6 + num_linhas), column=4, value="=SUM(D6:D" + str(5 + num_linhas) + ")")  # Soma das contribuições das ações
-soma_contrib.number_format = "R#,##0.00" # Formato de moeda real
+soma_contrib.number_format = "R$#,##0.00" # Formato de moeda real
 
 criar_titulo(6 + num_linhas, 5, 6 + num_linhas, 5, "Total Moedas")
 ws.cell(row=(6 + num_linhas), column=6, value="=SUM(F6:F" + str(5 + num_linhas) + ")")  # Soma das quantidades de moedas
 soma_val = ws.cell(row=(6 + num_linhas), column=7, value="=SUM(G6:G" + str(5 + num_linhas) + ")")  # Soma dos valores das ações
-soma_val.number_format = "R#,##0.00" # Formato de moeda real
+soma_val.number_format = "R$#,##0.00" # Formato de moeda real
 soma_contrib = ws.cell(row=(6 + num_linhas), column=8, value="=SUM(H6:H" + str(5 + num_linhas) + ")")  # Soma das contribuições das moedas
-soma_contrib.number_format = "R#,##0.00" # Formato de moeda real
+soma_contrib.number_format = "R$#,##0.00" # Formato de moeda real
 
 # Apresentação do Total da carteira
 criar_titulo(9 + num_linhas, 4, 10 + num_linhas, 5, "Valor da Carteira", "16")
 criar_titulo(11 + num_linhas, 4, 11 + num_linhas, 4, "Quantidade")
 criar_titulo(11 + num_linhas, 5, 11 + num_linhas, 5, "Valor acumulado total (R$)")
 soma_val = ws.cell(row=12 + num_linhas, column=4, value="=B" + str(6 + num_linhas) + "+F" + str(6 + num_linhas))  # Soma das quantidades de ações e de moedas
-soma_val.number_format = "R#,##0.00" # Formato de moeda real
+soma_val.number_format = "R$#,##0.00" # Formato de moeda real
 soma_contrib = ws.cell(row=12 + num_linhas, column=5, value="=D" + str(6 + num_linhas) + "+H" + str(6 + num_linhas))  # Soma dos valores acumulados de ações e de moedas
-soma_contrib.number_format = "R#,##0.00" # Formato de moeda real
+soma_contrib.number_format = "R$#,##0.00" # Formato de moeda real
 
 # Salvando
 wb.save("Carteira Cláudia.xlsx")

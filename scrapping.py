@@ -49,4 +49,4 @@ def encontra_ativos(url):
                 for j in celulas_moedas:
                     lista_moedas.append(celula.text)
 
-    estrutura(lista_acoes,lista_moedas, carteira, titulo)
+    return estrutura(lista_acoes,lista_moedas, carteira, titulo)

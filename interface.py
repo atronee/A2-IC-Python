@@ -1,4 +1,5 @@
 import scrapping
+import cotacao
 
 def interface():
     escolha = None
@@ -19,6 +20,8 @@ def interface():
                 print("pode chamar o módulo")
                 #Caso exista, o módulo que desenvolve o excel com as informações será chamado
                 ativos = scrapping.encontra_ativos(url)
+
+
 
         elif escolha == 2:
            break

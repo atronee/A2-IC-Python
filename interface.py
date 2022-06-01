@@ -1,4 +1,6 @@
 import scrapping
+import cotacao
+#import moduloluis
 
 def interface():
     escolha = None
@@ -16,9 +18,11 @@ def interface():
             #Aqui o programa irá pedi a URL e verificará se ela existe e funciona.
             url = str(input("Por favor, digite a url da sua carteira: "))
             if verifica_url(url):
-                print("pode chamar o módulo")
                 #Caso exista, o módulo que desenvolve o excel com as informações será chamado
-                ativos = scrapping.encontra_ativos(url)
+                carteira = scrapping.encontra_ativos(url)
+                carteira_cotacao = cotacao.cotacao(carteira)
+                # moduloluis(carteira_cotacao) 
+                # Vai salvar um arquivo excel
 
         elif escolha == 2:
            break
@@ -55,6 +59,5 @@ def verifica_url(url):
     except:#Se não consegui, ele retorna falso e volta para o menu.
         print(f"Não foi encontrada uma carteira na url passada.")
         return False
-    else: 
-        return True
+    return True
 

@@ -34,7 +34,7 @@ MANIFEST
 *.spec
 
 # IDE stuff
-openpyxl/.idea/
+pacote_modulos/.idea/
 
 # Installer logs
 pip-log.txt

@@ -20,8 +20,9 @@ def interface():
                 # Caso exista, o módulo que desenvolve o excel com as informações será chamado
                 carteira = scrapping.encontra_ativos(url)
                 carteira_cotacao = cotacao.cotacao(carteira)
-                dashboard.dashboard(carteira_cotacao)
-                # Vai salvar um arquivo excel
+                nome_do_arquivo_excel = input("Insira um nome para o arquivo com seu dashboard: ")
+                dashboard.dashboard(carteira_cotacao, nome_do_arquivo_excel)
+                # Vai salvar um arquivo .xlsx
 
         elif escolha == 2:
             break

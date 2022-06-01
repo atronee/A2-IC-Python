@@ -1,25 +1,5 @@
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font
-from datetime import datetime
-
-# Dados esperados:
-
-# carteira: dict de ações com qtds de papers, e de moedas, com qtds
-carteira = {
-    "Ações":
-        {"VALE3": 1000, "MGLU3": 1000, "ITUB4": 375},
-    "Moedas":
-        {"CAD": 150, "CHF": 500}
-}
-
-# cota: informações esperadas do YFINANCE, como preço atual e série histórica
-cota = {
-    "Ações":
-        {"VALE3": 84.25, "MGLU3": 4.07, "ITUB4": 26.02},
-    "Moedas":
-        {"CAD": 3.74, "CHF": 4.97},
-    "Série Histórica": []
-}
 
 
 def inicializa_planilha():  # Criação de variáveis do Excel
@@ -154,12 +134,7 @@ def salvar_excel(_planilha, nome_arquivo):  # Salva no diretório do usuário
     _planilha.save(nome_arquivo + ".xlsx")
 
 
-def gerador_de_nome():  # Cria um nome pro nosso arquivo Excel
-    agora = datetime.now().strftime("%f")  # Uso a contagem de microsegundos do momento para criar um número "aleatório"
-    return "Relatório " + agora
-
-
-def dashboard(_carteira):  # Consolidação do módulo; cria dashboard com dados da carteira
+def dashboard(_carteira, _nome):  # Consolidação do módulo; cria dashboard com dados da carteira
     planilha, folha = inicializa_planilha()
 
     formatacao_inicial(folha)
@@ -179,4 +154,4 @@ def dashboard(_carteira):  # Consolidação do módulo; cria dashboard com dados
 
     total_carteira(folha, num_linhas)
 
-    salvar_excel(planilha, gerador_de_nome())
+    salvar_excel(planilha, _nome)

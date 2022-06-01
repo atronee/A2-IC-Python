@@ -1,4 +1,15 @@
 from pacote_modulos import *
+import sys
+
+
+def arquivar(nome, dado):
+    original_stdout = sys.stdout
+
+    with open(nome, 'w') as f:
+        sys.stdout = f
+        print(dado)
+        sys.stdout = original_stdout
+
 
 def interface():
     escolha = None
@@ -19,7 +30,7 @@ def interface():
                 # Caso exista, o módulo que desenvolve o excel com as informações será chamado
                 carteira = scrapping.encontra_ativos(url)
                 carteira_cotacao = cotacao.cotacao(carteira)
-                # moduloluis(carteira_cotacao) 
+                dashboard.dashboard(carteira_cotacao)
                 # Vai salvar um arquivo excel
 
         elif escolha == 2:

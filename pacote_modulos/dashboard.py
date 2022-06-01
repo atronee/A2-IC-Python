@@ -1,5 +1,6 @@
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font
+from datetime import datetime
 
 # Dados esperados:
 
@@ -63,40 +64,52 @@ def celulas_fixas(_folha):  # Cria as células que tem posições fixas na plani
     criar_titulo(_folha, 5, 8, 5, 8, "Valor acumulado (R$)")
 
 
-def apresentar_acoes(_folha):  # Lista as ações na carteira
-    acoes = list(carteira["Ações"].keys())
-    num_acoes = len(acoes)
+def listar_acoes(_carteira):  # Extrai as ações da carteira
+    acoes = []
+    for ativo in _carteira["acao"]:
+        acoes.append([ativo["Nome"], ativo["Quantidade"], ativo["preco_atualizado"]])
+
+    return acoes
+
+
+def apresentar_acoes(_folha, _acoes):  # Lista as ações da carteira na planilha
+    num_acoes = len(_acoes)
 
     for i in range(num_acoes):  # Iterador das ações
-        _folha.cell(row=(6 + i), column=1, value=acoes[i])  # Nome da ação
-        _folha.cell(row=(6 + i), column=2, value=carteira["Ações"][acoes[i]])  # Quantidade na carteira
-        cotacao = _folha.cell(row=(6 + i), column=3, value=cota["Ações"][acoes[i]])  # Valor atual da ação
+        _folha.cell(row=(6 + i), column=1, value=_acoes[i][0])  # Nome da ação
+        _folha.cell(row=(6 + i), column=2, value=float(_acoes[i][1]))  # Quantidade na carteira
+        cotacao = _folha.cell(row=(6 + i), column=3, value=float(_acoes[i][2]))  # Valor atual da ação
         cotacao.number_format = "R$#,##0.00"  # Formato de moeda real
         contrib = _folha.cell(row=(6 + i), column=4,
                               value="=B" + str(6 + i) + "*C" + str(6 + i))  # Contribuição da ação (valor*quantidade)
         contrib.number_format = "R$#,##0.00"  # Formato de moeda real
 
 
-def apresentar_moedas(_folha):  # Lista as moedas na carteira
-    moedas = list(carteira["Moedas"].keys())
-    num_moedas = len(moedas)
+def listar_moedas(_carteira):  # Extrai as moedas da carteira
+    moedas = []
+    for ativo in _carteira["moeda"]:
+        moedas.append([ativo["Nome"], ativo["Quantidade"], ativo["preco_atualizado"]])
+
+    return moedas
+
+
+def apresentar_moedas(_folha, _moedas):  # Lista as moedas da carteira na planilha
+    num_moedas = len(_moedas)
 
     # Apresentação de Moedas
     for i in range(num_moedas):  # Iterador de moedas
-        _folha.cell(row=(6 + i), column=5, value=moedas[i])  # Nome da moeda
-        _folha.cell(row=(6 + i), column=6, value=carteira["Moedas"][moedas[i]])  # Quantidade na carteira
-        cotacao = _folha.cell(row=(6 + i), column=7, value=cota["Moedas"][moedas[i]])  # Valor atual da moeda
+        _folha.cell(row=(6 + i), column=5, value=_moedas[i][0])  # Nome da moeda
+        _folha.cell(row=(6 + i), column=6, value=float(_moedas[i][1]))  # Quantidade na carteira
+        cotacao = _folha.cell(row=(6 + i), column=7, value=float(_moedas[i][2]))  # Valor atual da moeda
         cotacao.number_format = "R$#,##0.00"  # Formato de moeda real
         contrib = _folha.cell(row=(6 + i), column=8,
                               value="=F" + str(6 + i) + "*G" + str(6 + i))  # Contribuição da moeda (valor*quantidade)
         contrib.number_format = "R$#,##0.00"  # Formato de moeda real
 
 
-def qtd_linhas():  # Retorna a quantidade variável de linhas
-    acoes = list(carteira["Ações"].keys())
-    num_acoes = len(acoes)
-    moedas = list(carteira["Moedas"].keys())
-    num_moedas = len(moedas)
+def qtd_linhas(_acoes, _moedas):  # Retorna a quantidade variável de linhas
+    num_acoes = len(_acoes)
+    num_moedas = len(_moedas)
 
     return max(num_moedas, num_acoes)
 
@@ -141,21 +154,29 @@ def salvar_excel(_planilha, nome_arquivo):  # Salva no diretório do usuário
     _planilha.save(nome_arquivo + ".xlsx")
 
 
-def dashboard():  # Consolidação do módulo; cria dashboard com dados da carteira
+def gerador_de_nome():  # Cria um nome pro nosso arquivo Excel
+    agora = datetime.now().strftime("%f")
+    return "Relatório " + agora
+
+
+def dashboard(_carteira):  # Consolidação do módulo; cria dashboard com dados da carteira
     planilha, folha = inicializa_planilha()
 
     formatacao_inicial(folha)
 
     celulas_fixas(folha)
 
-    apresentar_acoes(folha)
-    apresentar_moedas(folha)
+    acoes = listar_acoes(_carteira)
+    moedas = listar_moedas(_carteira)
 
-    num_linhas = qtd_linhas()
+    apresentar_acoes(folha, acoes)
+    apresentar_moedas(folha, moedas)
+
+    num_linhas = qtd_linhas(acoes, moedas)
 
     totais_acoes(folha, num_linhas)
     totais_moedas(folha, num_linhas)
 
     total_carteira(folha, num_linhas)
 
-    salvar_excel(planilha, "Carteira Cláudia")
+    salvar_excel(planilha, gerador_de_nome())

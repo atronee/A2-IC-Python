@@ -155,7 +155,7 @@ def salvar_excel(_planilha, nome_arquivo):  # Salva no diretório do usuário
 
 
 def gerador_de_nome():  # Cria um nome pro nosso arquivo Excel
-    agora = datetime.now().strftime("%f")
+    agora = datetime.now().strftime("%f")  # Uso a contagem de microsegundos do momento para criar um número "aleatório"
     return "Relatório " + agora
 
 

@@ -1,14 +1,4 @@
 from pacote_modulos import *
-import sys
-
-
-def arquivar(nome, dado):
-    original_stdout = sys.stdout
-
-    with open(nome, 'w') as f:
-        sys.stdout = f
-        print(dado)
-        sys.stdout = original_stdout
 
 
 def interface():

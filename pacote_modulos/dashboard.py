@@ -1,5 +1,7 @@
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font
+from openpyxl.chart import BarChart, LineChart, Reference
+from openpyxl.chart.axis import DateAxis
 
 
 def inicializa_planilha():  # Criação de variáveis do Excel
@@ -130,6 +132,65 @@ def total_carteira(_folha, _num_linhas):  # Apresentação do Total da carteira
     soma_contrib.number_format = "R$#,##0.00"  # Formato de moeda real
 
 
+def graf_barras1(_folha): #Criação e apresentação do primeiro gráfico
+
+    graf_1= BarChart() #Gráfico de barras
+    graf_1.type = "col" #Tipo de gráfico
+    graf_1.style = 10 #Tamanho do gráfico
+    graf_1.title = "Composição da carteira (por ação)" #Título do gráfico
+    graf_1.y_axis.title = 'Valor de cada ação' #Título do eixo y
+    graf_1.x_axis.title = 'Ações' #Título do eixo x
+
+    data = Reference(_folha, min_col=4, min_row=6, max_row=9) #Seleciona o valor acumulado de cada ação
+    cats = Reference(_folha, min_col=1, min_row=6, max_row=9) #Seleciona o nome de cada ação
+    graf_1.add_data(data, titles_from_data=False) #Adiciona o valor acumulado de cada ação
+    graf_1.set_categories(cats) #Adiciona o nome de cada ação
+    graf_1.shape = 4 #Formato do gráfico
+
+    _folha.add_chart(graf_1, "A20") #Adiciona o gráfico na planilha
+
+
+def graf_barras2(_folha): #Criação e apresentação do segundo gráfico
+
+    graf_2= BarChart() #Gráfico de barras
+    graf_2.type = "col" #Tipo de gráfico
+    graf_2.style = 10 #Tamanho do gráfico
+    graf_2.title = "Composição da carteira (por moeda)" #Título do gráfico
+    graf_2.y_axis.title = 'Valor de cada moeda' #Título do eixo y
+    graf_2.x_axis.title = 'Moedas' #Título do eixo x
+
+    data = Reference(_folha, min_col=8, min_row=6, max_row=9) #Seleciona o valor acumulado de cada moeda
+    cats = Reference(_folha, min_col=5, min_row=6, max_row=9) #Seleciona o nome de cada moeda
+    graf_2.add_data(data, titles_from_data=False) #Adiciona o valor acumulado de cada moeda
+    graf_2.set_categories(cats) #Adiciona o nome de cada moeda
+    graf_2.shape = 4 #Formato do gráfico
+
+    _folha.add_chart(graf_2, "E20") #Adiciona o gráfico na planilha
+
+
+def graf_linhas3(_folha, _carteira):
+
+    graf_3 = LineChart()
+    graf_3.title = "Preço histórico das ações"
+    graf_3.style = 12
+    graf_3.y_axis.title = "Preço"
+    graf_3.y_axis.crossAx = 500
+    graf_3.x_axis = DateAxis(crossAx=100)
+    graf_3.x_axis.number_format = '%Y-%m'
+    graf_3.x_axis.majorTimeUnit = "months"
+    graf_3.x_axis.title = "Data"
+
+    for acao in _carteira["acao"]:
+        dados = acao["preco_historico"].values.tolist()
+        preco = [i[1] for i in dados[2:]]
+
+        graf_3.add_data(preco, titles_from_data=True)
+        datas = Reference([x[0] for x in dados[2:]])
+        graf_3.set_categories(datas)
+
+    _folha.add_chart(graf_3, "A37")
+
+
 def salvar_excel(_planilha, nome_arquivo):  # Salva no diretório do usuário
     _planilha.save(nome_arquivo + ".xlsx")
 
@@ -154,4 +215,11 @@ def dashboard(_carteira, _nome):  # Consolidação do módulo; cria dashboard co
 
     total_carteira(folha, num_linhas)
 
+    graf_barras1(folha)
+
+    graf_barras2(folha)
+
+    graf_linhas3(folha, _carteira)
+
     salvar_excel(planilha, _nome)
+

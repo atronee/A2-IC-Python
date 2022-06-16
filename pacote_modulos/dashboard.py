@@ -1,8 +1,10 @@
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font
 from openpyxl.chart import BarChart, LineChart, Reference
-from openpyxl.chart.axis import DateAxis
-
+from openpyxl.chart.shapes import GraphicalProperties
+from openpyxl.chart.axis import ChartLines
+from openpyxl.drawing.line import LineProperties
+import pandas as pd
 
 def inicializa_planilha():  # Criação de variáveis do Excel
     _planilha = Workbook()  # cria planilha
@@ -168,25 +170,39 @@ def graf_barras2(_folha): #Criação e apresentação do segundo gráfico
     _folha.add_chart(graf_2, "E20") #Adiciona o gráfico na planilha
 
 
-def graf_linhas3(_folha, _carteira):
+def graf_linhas3(_carteira, _folha):
 
+    linha = 2
+    coluna_data = 15
+    coluna_valor = 16
+    _folha.cell(row=linha, column=coluna_data, value="Data")
+    _folha.cell(row=linha, column=coluna_valor, value="Valores")
+    for values in _carteira.values():
+        for value in values:
+            for val in value.values():
+                if isinstance(val, pd.DataFrame):
+                    for ind in range(len(val)):
+                        linha += 1
+                        _folha.cell(row=linha, column=coluna_valor, value=val.iloc[ind, 0])           
+                    
+        
     graf_3 = LineChart()
-    graf_3.title = "Preço histórico das ações"
+    graf_3.title = "Valor Histórico da Carteira"
     graf_3.style = 12
-    graf_3.y_axis.title = "Preço"
-    graf_3.y_axis.crossAx = 500
-    graf_3.x_axis = DateAxis(crossAx=100)
-    graf_3.x_axis.number_format = '%Y-%m'
+    graf_3.y_axis.title = "Valor da Carteira (em R$)"
+    graf_3.x_axis.number_format = "dd-mm-yy"
     graf_3.x_axis.majorTimeUnit = "months"
     graf_3.x_axis.title = "Data"
+    graf_3.legend = None
 
-    for acao in _carteira["acao"]:
-        dados = acao["preco_historico"].values.tolist()
-        preco = [i[1] for i in dados[2:]]
+    dados = Reference(_folha, min_col=7, min_row=2, max_col=7, max_row=linha)
+    tempo = Reference(_folha, min_col=6, min_row=3, max_col=6, max_row=linha)
+    graf_3.add_data(dados, titles_from_data=True)
+    graf_3.set_categories(tempo)
 
-        graf_3.add_data(preco, titles_from_data=True)
-        datas = Reference([x[0] for x in dados[2:]])
-        graf_3.set_categories(datas)
+    s1 = graf_3.series[0]
+    s1.graphicalProperties.line.solidFill = "0000FF"
+    s1.graphicalProperties.line.width = 25000
 
     _folha.add_chart(graf_3, "A37")
 
@@ -219,7 +235,7 @@ def dashboard(_carteira, _nome):  # Consolidação do módulo; cria dashboard co
 
     graf_barras2(folha)
 
-    graf_linhas3(folha, _carteira)
+    graf_linhas3(_carteira, folha)
 
     salvar_excel(planilha, _nome)
 

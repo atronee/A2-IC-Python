@@ -4,6 +4,7 @@ from openpyxl.chart import BarChart, LineChart, Reference
 from openpyxl.chart.shapes import GraphicalProperties
 from openpyxl.chart.axis import ChartLines
 from openpyxl.drawing.line import LineProperties
+from datetime import datetime, timedelta
 import pandas as pd
 
 def inicializa_planilha():  # Criação de variáveis do Excel
@@ -134,7 +135,7 @@ def total_carteira(_folha, _num_linhas):  # Apresentação do Total da carteira
     soma_contrib.number_format = "R$#,##0.00"  # Formato de moeda real
 
 
-def graf_barras1(_folha): #Criação e apresentação do primeiro gráfico
+def graf_barras1(_folha, _num_linhas): #Criação e apresentação do primeiro gráfico
 
     graf_1= BarChart() #Gráfico de barras
     graf_1.type = "col" #Tipo de gráfico
@@ -142,9 +143,10 @@ def graf_barras1(_folha): #Criação e apresentação do primeiro gráfico
     graf_1.title = "Composição da carteira (por ação)" #Título do gráfico
     graf_1.y_axis.title = 'Valor de cada ação' #Título do eixo y
     graf_1.x_axis.title = 'Ações' #Título do eixo x
+    graf_1.legend = None #Exclui legenda
 
-    data = Reference(_folha, min_col=4, min_row=6, max_row=9) #Seleciona o valor acumulado de cada ação
-    cats = Reference(_folha, min_col=1, min_row=6, max_row=9) #Seleciona o nome de cada ação
+    data = Reference(_folha, min_col=4, min_row=6, max_row=_num_linhas+5) #Seleciona o valor acumulado de cada ação
+    cats = Reference(_folha, min_col=1, min_row=6, max_row=_num_linhas+5) #Seleciona o nome de cada ação
     graf_1.add_data(data, titles_from_data=False) #Adiciona o valor acumulado de cada ação
     graf_1.set_categories(cats) #Adiciona o nome de cada ação
     graf_1.shape = 4 #Formato do gráfico
@@ -152,7 +154,7 @@ def graf_barras1(_folha): #Criação e apresentação do primeiro gráfico
     _folha.add_chart(graf_1, "A20") #Adiciona o gráfico na planilha
 
 
-def graf_barras2(_folha): #Criação e apresentação do segundo gráfico
+def graf_barras2(_folha, _num_linhas): #Criação e apresentação do segundo gráfico
 
     graf_2= BarChart() #Gráfico de barras
     graf_2.type = "col" #Tipo de gráfico
@@ -160,9 +162,10 @@ def graf_barras2(_folha): #Criação e apresentação do segundo gráfico
     graf_2.title = "Composição da carteira (por moeda)" #Título do gráfico
     graf_2.y_axis.title = 'Valor de cada moeda' #Título do eixo y
     graf_2.x_axis.title = 'Moedas' #Título do eixo x
+    graf_2.legend = None #Exclui legenda
 
-    data = Reference(_folha, min_col=8, min_row=6, max_row=9) #Seleciona o valor acumulado de cada moeda
-    cats = Reference(_folha, min_col=5, min_row=6, max_row=9) #Seleciona o nome de cada moeda
+    data = Reference(_folha, min_col=8, min_row=6, max_row=_num_linhas+5) #Seleciona o valor acumulado de cada moeda
+    cats = Reference(_folha, min_col=5, min_row=6, max_row=_num_linhas+5) #Seleciona o nome de cada moeda
     graf_2.add_data(data, titles_from_data=False) #Adiciona o valor acumulado de cada moeda
     graf_2.set_categories(cats) #Adiciona o nome de cada moeda
     graf_2.shape = 4 #Formato do gráfico
@@ -170,9 +173,9 @@ def graf_barras2(_folha): #Criação e apresentação do segundo gráfico
     _folha.add_chart(graf_2, "E20") #Adiciona o gráfico na planilha
 
 
-def graf_linhas3(_carteira, _folha):
+def graf_linhas3(num_acoes, _carteira, _planilha):
 
-    linha = 2
+    """linha = 2
     coluna_data = 15
     coluna_valor = 16
     _folha.cell(row=linha, column=coluna_data, value="Data")
@@ -184,8 +187,41 @@ def graf_linhas3(_carteira, _folha):
                     for ind in range(len(val)):
                         linha += 1
                         _folha.cell(row=linha, column=coluna_valor, value=val.iloc[ind, 0])           
-                    
+                    """
+
+    _folha = _planilha.create_sheet("Histórico")
+
+    valor_por_ativo = {}
+    for ativo in _carteira.keys():
+        dataframe = _carteira[ativo]
+        valor_por_ativo[ativo] = {}
+        for data in dataframe.index:
+            strf_data = data.strftime("%Y-%m-%d")
+            valor = (dataframe.at[data, "Close"]) * float(num_acoes[ativo])
+            valor_por_ativo[ativo][strf_data] = valor
         
+    datas_comum = set(valor_por_ativo[ativo].keys())
+    for ativo in valor_por_ativo.keys():
+        datas_comum = datas_comum.intersection(set(valor_por_ativo[ativo].keys()))
+    
+    dados_finais = {}
+    for data in valor_por_ativo[ativo].keys():
+        valor_total = 0
+        if data in datas_comum:
+            for ativo in valor_por_ativo.keys():
+                valor_total += valor_por_ativo[ativo][data]
+            dados_finais[data] = valor_total
+
+    linha = 2
+    coluna_data = 15
+    coluna_valor = 16
+    _folha.cell(row=linha, column=coluna_data, value="Data")
+    _folha.cell(row=linha, column=coluna_valor, value="Valores")
+    for key in dados_finais.keys():
+        linha += 1
+        _folha.cell(row=linha, column=coluna_data, value=key)
+        _folha.cell(row=linha, column=coluna_valor, value=dados_finais[key])
+
     graf_3 = LineChart()
     graf_3.title = "Valor Histórico da Carteira"
     graf_3.style = 12
@@ -195,8 +231,8 @@ def graf_linhas3(_carteira, _folha):
     graf_3.x_axis.title = "Data"
     graf_3.legend = None
 
-    dados = Reference(_folha, min_col=7, min_row=2, max_col=7, max_row=linha)
-    tempo = Reference(_folha, min_col=6, min_row=3, max_col=6, max_row=linha)
+    dados = Reference(_folha, min_col=16, min_row=2, max_col=16, max_row=linha)
+    tempo = Reference(_folha, min_col=15, min_row=3, max_col=15, max_row=linha)
     graf_3.add_data(dados, titles_from_data=True)
     graf_3.set_categories(tempo)
 
@@ -231,9 +267,9 @@ def dashboard(_carteira, _nome):  # Consolidação do módulo; cria dashboard co
 
     total_carteira(folha, num_linhas)
 
-    graf_barras1(folha)
+    graf_barras1(folha, num_linhas)
 
-    graf_barras2(folha)
+    graf_barras2(folha, num_linhas)
 
     graf_linhas3(_carteira, folha)
 

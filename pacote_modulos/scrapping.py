@@ -1,10 +1,18 @@
 from bs4 import BeautifulSoup
 import requests
 
-def estrutura(lista_acoes,lista_moedas, carteira):  
-    # Organiza os dados em {acao:[{nome:"nome",quantidade:"número"}],
-    # moeda:[{nome:"nome",quantidade:"número"}],
-    # título:"título"}
+def estrutura(lista_acoes,lista_moedas, carteira):
+    """-> Organiza os dados em um dicionário com informações das ações e moedas.
+
+    Args:
+        :lista_acoes(list): A lista que contem as informações de uma ação em pares ex: [nome, petr4, quantidade, 100].\n
+        :lista_moedas(list): A lista que contem as informações de uma moeda em pares.\n
+        :carteira(dict): o dicionário onde seram adicionadas as informações.
+    Returns:
+        dict: retornará um dicionário com a estrutura {acao:[{nome:"nome",quantidade:"número"}],\n
+                                                      moeda:[{nome:"nome",quantidade:"número"}],\n
+                                                      título:"título"}.
+    """
     acoes_lista = []                                                     
     for i in range(0,len(lista_acoes), 2):                               
         disc_acoes = {}
@@ -22,6 +30,14 @@ def estrutura(lista_acoes,lista_moedas, carteira):
     return carteira
 
 def encontra_ativos(url):
+    """-> Busca em um html, as celulas com div de class acao ou moeda e adiciona as informações numa lista em pares.
+
+    Args:
+        :url(string): o url de uma carteira.
+
+    Returns:
+        dict: retornará a função estrutura com lista_moedas, lista_acoes e o dicionário carteira como parâmetro.
+    """   
     lista_acoes = [] # Lista com as células dentro da tabela de ações
     lista_moedas =[] # Lista com as células dentro da tabela de Moedas
     carteira ={}     # Dicionário que vai ser retornado para a interface

@@ -139,6 +139,7 @@ def cria_hist(_planilha, _carteira):
     _folha = _planilha.create_sheet("Histórico")  # Cria uma folha para histórico dos valores de ações
 
     dados_acao = _carteira["acao"]
+    dados_acao = sorted(dados_acao, key=lambda x: -x['preco_atualizado'])
     num_acoes = len(dados_acao)
 
     for i in range(num_acoes):

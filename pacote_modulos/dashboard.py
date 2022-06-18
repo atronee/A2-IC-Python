@@ -141,6 +141,7 @@ def cria_hist(_planilha, _carteira):
     dados_acao = _carteira["acao"]
     dados_acao = sorted(dados_acao, key=lambda x: -x['preco_atualizado'])
     num_acoes = len(dados_acao)
+    _ultima_linha = 0
 
     for i in range(num_acoes):
         criar_titulo(_folha, 1, 2*i+1, 1, 2*i+2, dados_acao[i]["Nome"])
@@ -155,6 +156,8 @@ def cria_hist(_planilha, _carteira):
         datas = [datetime.strptime(str(date), "%Y-%m-%d %H:%M:%S").strftime("%Y-%m-%d") for date in datas]
 
         _qtd_linhas = len(datas)
+        if i == 0:
+            _ultima_linha = 2 + _qtd_linhas 
 
         for j in range(_qtd_linhas):
             _folha.cell(row=3+j, column=2*i+1, value=datas[j])
@@ -182,6 +185,8 @@ def cria_hist(_planilha, _carteira):
             _cell = _folha.cell(row=3 + j, column=2*num_acoes+2 * i + 1, value=datas[j])
             _folha.cell(row=3 + j, column=2*num_acoes+2 * i + 2, value=valores[j])
             _cell.number_format = "R$#,##0.00"
+    
+    return (_ultima_linha)
 
 
 def graf_barras1(_folha, _num_linhas): #Criação e apresentação do primeiro gráfico
@@ -222,67 +227,21 @@ def graf_barras2(_folha, _num_linhas): #Criação e apresentação do segundo gr
     _folha.add_chart(graf_2, "E20") #Adiciona o gráfico na planilha
 
 
-def graf_linhas3(num_acoes, _carteira, _planilha):
+def graf_linhas3(_planilha, _ultima_linha): #Criação e apresentação do terceiro gráfico
 
-    """linha = 2
-    coluna_data = 15
-    coluna_valor = 16
-    _folha.cell(row=linha, column=coluna_data, value="Data")
-    _folha.cell(row=linha, column=coluna_valor, value="Valores")
-    for values in _carteira.values():
-        for value in values:
-            for val in value.values():
-                if isinstance(val, pd.DataFrame):
-                    for ind in range(len(val)):
-                        linha += 1
-                        _folha.cell(row=linha, column=coluna_valor, value=val.iloc[ind, 0])           
-                    """
+    _folha = _planilha["Histórico"]
 
-    cria_hist(_planilha, _carteira)
-    _folha = _planilha["Dashboard"]
+    graf_3 = LineChart() #Gráfico de linhas
+    graf_3.title = "Histórico da ação que mais vale na carteira" #Título do gráfico
+    graf_3.style = 12 #Tamanho do gráfico
+    graf_3.y_axis.title = "Valor da ação (em R$)" #Título do eixo y
+    graf_3.x_axis.number_format = "%Y-%m-%d" # formato da data
+    graf_3.x_axis.majorTimeUnit = "years" #Unidade de tempo para o eixo x
+    graf_3.x_axis.title = "Data" #Título do eixo x
+    graf_3.legend = None #Exclui legenda
 
-    valor_por_ativo = {}
-    for ativo in _carteira.keys():
-        dataframe = _carteira[ativo]
-        valor_por_ativo[ativo] = {}
-        for data in dataframe.index:
-            strf_data = data.strftime("%Y-%m-%d")
-            valor = (dataframe.at[data, "Close"]) * float(num_acoes[ativo])
-            valor_por_ativo[ativo][strf_data] = valor
-        
-    datas_comum = set(valor_por_ativo[ativo].keys())
-    for ativo in valor_por_ativo.keys():
-        datas_comum = datas_comum.intersection(set(valor_por_ativo[ativo].keys()))
-    
-    dados_finais = {}
-    for data in valor_por_ativo[ativo].keys():
-        valor_total = 0
-        if data in datas_comum:
-            for ativo in valor_por_ativo.keys():
-                valor_total += valor_por_ativo[ativo][data]
-            dados_finais[data] = valor_total
-
-    linha = 2
-    coluna_data = 15
-    coluna_valor = 16
-    _folha.cell(row=linha, column=coluna_data, value="Data")
-    _folha.cell(row=linha, column=coluna_valor, value="Valores")
-    for key in dados_finais.keys():
-        linha += 1
-        _folha.cell(row=linha, column=coluna_data, value=key)
-        _folha.cell(row=linha, column=coluna_valor, value=dados_finais[key])
-
-    graf_3 = LineChart()
-    graf_3.title = "Valor Histórico da Carteira"
-    graf_3.style = 12
-    graf_3.y_axis.title = "Valor da Carteira (em R$)"
-    graf_3.x_axis.number_format = "dd-mm-yy"
-    graf_3.x_axis.majorTimeUnit = "months"
-    graf_3.x_axis.title = "Data"
-    graf_3.legend = None
-
-    dados = Reference(_folha, min_col=16, min_row=2, max_col=16, max_row=linha)
-    tempo = Reference(_folha, min_col=15, min_row=3, max_col=15, max_row=linha)
+    dados = Reference(_folha, min_col=2, min_row=3, max_col=2, max_row=_ultima_linha) #Seleciona o valor de fechamento do ativo
+    tempo = Reference(_folha, min_col=1, min_row=3, max_col=1, max_row=_ultima_linha) #Seleciona a data de fechamento do ativo
     graf_3.add_data(dados, titles_from_data=True)
     graf_3.set_categories(tempo)
 
@@ -290,7 +249,9 @@ def graf_linhas3(num_acoes, _carteira, _planilha):
     s1.graphicalProperties.line.solidFill = "0000FF"
     s1.graphicalProperties.line.width = 25000
 
-    _folha.add_chart(graf_3, "A37")
+    _folha = _planilha["Dashboard"]
+
+    _folha.add_chart(graf_3, "A35") #Adiciona o gráfico na planilha
 
 
 def salvar_excel(_planilha, nome_arquivo):  # Salva no diretório do usuário
@@ -321,7 +282,7 @@ def dashboard(_carteira, _nome):  # Consolidação do módulo; cria dashboard co
 
     graf_barras2(folha, num_linhas)
 
-    cria_hist(planilha, _carteira)
+    graf_linhas3(planilha, cria_hist(planilha, _carteira))
 
     salvar_excel(planilha, _nome)
 

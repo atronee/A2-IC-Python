@@ -247,7 +247,7 @@ def graf_linhas3(_planilha, _ultima_linha): #Criação e apresentação do terce
     _folha = _planilha["Histórico"] #Transfere para a worksheet selecionada
 
     graf_3 = LineChart() #Gráfico de linhas
-    graf_3.title = "Histórico da ação que mais vale na carteira" #Título do gráfico
+    graf_3.title = "Histórico da ação que mais vale na carteira (" + _folha["A1"].value + ")" #Título do gráfico
     graf_3.style = 12 #Tamanho do gráfico
     graf_3.y_axis.title = "Valor da ação (em R$)" #Título do eixo y
     graf_3.x_axis.number_format = "%Y-%m-%d" # formato da data

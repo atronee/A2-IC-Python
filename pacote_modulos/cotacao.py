@@ -1,11 +1,14 @@
 import yfinance as yf
 
 def cotacao(carteira):
-    """
-    -> Recebe uma carteira com ativos e retorna a cotaçao do dia e a cotação histórica.
-    :param carteira: carteira com os ativos. 
-    :return: retorna a carteira com a cotação atualizada do dia e a cotação histórica.
-    """
+    """Recebe uma carteira com ativos e retorna a cotaçao do dia e a cotação histórica.
+
+    Args:
+        carteira (dict): carteira com os ativos.
+
+    Returns:
+        dict: retorna a carteira com a cotação atualizada do dia e a cotação histórica.
+    """    
     
     for ativos in carteira.values():
         for ativo in ativos:
@@ -28,11 +31,14 @@ def cotacao(carteira):
     return carteira
 
 def converte_moeda_de_cotacao(moeda_estrangeira, cotacao_ativo):
-    """
-    -> Recebe a moeda estrangeira e converte ela para a moeda Real, sendo uma cotaçao instantânea para o preço atualizado do dia e outra com a cotação do fechamento de cada dia para o preço histórico do ativo.
-    :param moeda_estrangeira: moeda que se deseja fazer converter. 
-    :param cotacao_ativo: o ativo que se deseja ter a cotação. 
-    :return: Um dicionário com a cotação instantânea para o preço atualizado do dia e com a cotação do fechamento de cada dia para o preço histórico.
+    """-> Recebe a moeda estrangeira e converte ela para a moeda Real, sendo uma cotaçao instantânea para o preço atualizado do dia e outra com a cotação do fechamento de cada dia para o preço histórico do ativo.
+
+    Args:
+        moeda_estrangeira (string): moeda que se deseja fazer converter.
+        cotacao_ativo (dataframe): o ativo que se deseja ter a cotação. 
+
+    Returns:
+        dict: Um dicionário com a cotação instantânea para o preço atualizado do dia e com a cotação do fechamento de cada dia para o preço histórico.
     """
 
     moeda_br = moeda_estrangeira + "BRL=X"

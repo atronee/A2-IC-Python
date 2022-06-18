@@ -190,7 +190,12 @@ def cria_hist(_planilha, _carteira):
 
 
 def graf_barras1(_folha, _num_linhas): #Criação e apresentação do primeiro gráfico
+    """_ Cria um gráfico de barras que analisa a composição da carteira por ação_
 
+    Args:
+        _folha: _Acessa os dados da folha da planilha_
+        _num_linhas: _Acessa a última linha de referência da tabela do dashboard_
+    """
     graf_1= BarChart() #Gráfico de barras
     graf_1.type = "col" #Tipo de gráfico
     graf_1.style = 10 #Tamanho do gráfico
@@ -209,7 +214,12 @@ def graf_barras1(_folha, _num_linhas): #Criação e apresentação do primeiro g
 
 
 def graf_barras2(_folha, _num_linhas): #Criação e apresentação do segundo gráfico
+    """_Cria um gráfico de barras que analisa a composição da carteira por moeda_
 
+    Args:
+        _folha: _Acessa os dados da folha da planilha_
+        _num_linhas: _Acessa a última linha de referência da tabela do dashboard_
+    """
     graf_2= BarChart() #Gráfico de barras
     graf_2.type = "col" #Tipo de gráfico
     graf_2.style = 10 #Tamanho do gráfico
@@ -228,8 +238,13 @@ def graf_barras2(_folha, _num_linhas): #Criação e apresentação do segundo gr
 
 
 def graf_linhas3(_planilha, _ultima_linha): #Criação e apresentação do terceiro gráfico
+    """_Cria um gráfico de linhas que analisa o histórico da ação de maior valor na carteira_
 
-    _folha = _planilha["Histórico"]
+    Args:
+        _planilha: _Acessa os dados da folha da planilha_
+        _ultima_linha: _Acessa a última linha de referência da tabela do histórico_
+    """
+    _folha = _planilha["Histórico"] #Transfere para a worksheet selecionada
 
     graf_3 = LineChart() #Gráfico de linhas
     graf_3.title = "Histórico da ação que mais vale na carteira" #Título do gráfico
@@ -242,14 +257,15 @@ def graf_linhas3(_planilha, _ultima_linha): #Criação e apresentação do terce
 
     dados = Reference(_folha, min_col=2, min_row=3, max_col=2, max_row=_ultima_linha) #Seleciona o valor de fechamento do ativo
     tempo = Reference(_folha, min_col=1, min_row=3, max_col=1, max_row=_ultima_linha) #Seleciona a data de fechamento do ativo
-    graf_3.add_data(dados, titles_from_data=True)
-    graf_3.set_categories(tempo)
+    graf_3.add_data(dados, titles_from_data=True) #Adiciona o valor de fechamento do ativo
+    graf_3.set_categories(tempo) #Adiciona a data de fechamento do ativo
 
+    #Estilização
     s1 = graf_3.series[0]
-    s1.graphicalProperties.line.solidFill = "0000FF"
-    s1.graphicalProperties.line.width = 25000
+    s1.graphicalProperties.line.solidFill = "0000FF" #Cor da linha
+    s1.graphicalProperties.line.width = 25000 #Largura da linha
 
-    _folha = _planilha["Dashboard"]
+    _folha = _planilha["Dashboard"] #Retorna para a worksheet selecionada
 
     _folha.add_chart(graf_3, "A35") #Adiciona o gráfico na planilha
 

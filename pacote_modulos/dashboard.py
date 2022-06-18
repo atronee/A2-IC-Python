@@ -135,6 +135,54 @@ def total_carteira(_folha, _num_linhas):  # Apresentação do Total da carteira
     soma_contrib.number_format = "R$#,##0.00"  # Formato de moeda real
 
 
+def cria_hist(_planilha, _carteira):
+    _folha = _planilha.create_sheet("Histórico")  # Cria uma folha para histórico dos valores de ações
+
+    dados_acao = _carteira["acao"]
+    num_acoes = len(dados_acao)
+
+    for i in range(num_acoes):
+        criar_titulo(_folha, 1, 2*i+1, 1, 2*i+2, dados_acao[i]["Nome"])
+        _folha.cell(row=2, column=2*i+1, value="Data")
+        _folha.cell(row=2, column=2*i+2, value="Close")
+
+        dados_historicos = dados_acao[i]["preco_historico"]
+
+        valores = dados_historicos.values.tolist()
+        valores = [valor[0] for valor in valores]
+        datas = dados_historicos.index.tolist()
+        datas = [datetime.strptime(str(date), "%Y-%m-%d %H:%M:%S").strftime("%Y-%m-%d") for date in datas]
+
+        _qtd_linhas = len(datas)
+
+        for j in range(_qtd_linhas):
+            _folha.cell(row=3+j, column=2*i+1, value=datas[j])
+            _cell = _folha.cell(row=3+j, column=2*i+2, value=valores[j])
+            _cell.number_format = "R$#,##0.00"
+
+    dados_moedas = _carteira["moeda"]
+    num_moedas = len(dados_moedas)
+
+    for i in range(num_moedas):
+        criar_titulo(_folha, 1, 2*num_acoes+2 * i + 1, 1, 2*num_acoes+2 * i + 2, dados_moedas[i]["Nome"])
+        _folha.cell(row=2, column=2*num_acoes+2 * i + 1, value="Data")
+        _folha.cell(row=2, column=2*num_acoes+2 * i + 2, value="Close")
+
+        dados_historicos = dados_moedas[i]["preco_historico"]
+
+        valores = dados_historicos.values.tolist()
+        valores = [valor[0] for valor in valores]
+        datas = dados_historicos.index.tolist()
+        datas = [datetime.strptime(str(date), "%Y-%m-%d %H:%M:%S").strftime("%Y-%m-%d") for date in datas]
+
+        _qtd_linhas = len(datas)
+
+        for j in range(_qtd_linhas):
+            _cell = _folha.cell(row=3 + j, column=2*num_acoes+2 * i + 1, value=datas[j])
+            _folha.cell(row=3 + j, column=2*num_acoes+2 * i + 2, value=valores[j])
+            _cell.number_format = "R$#,##0.00"
+
+
 def graf_barras1(_folha, _num_linhas): #Criação e apresentação do primeiro gráfico
 
     graf_1= BarChart() #Gráfico de barras
@@ -189,7 +237,8 @@ def graf_linhas3(num_acoes, _carteira, _planilha):
                         _folha.cell(row=linha, column=coluna_valor, value=val.iloc[ind, 0])           
                     """
 
-    _folha = _planilha.create_sheet("Histórico")
+    cria_hist(_planilha, _carteira)
+    _folha = _planilha["Dashboard"]
 
     valor_por_ativo = {}
     for ativo in _carteira.keys():
@@ -271,7 +320,7 @@ def dashboard(_carteira, _nome):  # Consolidação do módulo; cria dashboard co
 
     graf_barras2(folha, num_linhas)
 
-    graf_linhas3(_carteira, folha)
+    cria_hist(planilha, _carteira)
 
     salvar_excel(planilha, _nome)
 

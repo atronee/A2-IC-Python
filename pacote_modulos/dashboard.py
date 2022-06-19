@@ -1,4 +1,4 @@
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Alignment, Font
 from openpyxl.chart import BarChart, LineChart, Reference
 from openpyxl.drawing.image import Image
@@ -365,14 +365,15 @@ def salvar_excel(_planilha, nome_arquivo):
     _planilha.save(nome_arquivo + ".xlsx")
 
 
-def criar_img(_valor, _nome):
+def criar_img(_nome, _num_linhas):
     """
     Cria a imagem do QR Code.\n
-    :param _valor: valor total da carteira
     :param _nome: nome da planilha associada
+    :param _num_linhas: quantidade variável de linhas da planilha
     :return:
     """
-    data = f'O valor da carteira é R${_valor}'
+    planilha = load_workbook(filename=_nome+".xlsx", data_only=True)
+    data = f'O valor da carteira é R${planilha["Dashboard"]["E"+str(12+_num_linhas)]}'
     img = qrcode.make(data)
 
     img.save('qrcode_'+_nome+'.png')
@@ -421,8 +422,8 @@ def dashboard(_carteira, _nome):
 
     graf_linhas3(planilha, cria_hist(planilha, _carteira))
 
-    criar_img(folha.cell(row=12 + num_linhas, column=5).value, _nome)
+    salvar_excel(planilha, _nome)
+
+    criar_img(_nome, num_linhas)
 
     adc_img(folha, 'qrcode_'+_nome+'.png')
-
-    salvar_excel(planilha, _nome)

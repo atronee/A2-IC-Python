@@ -5,5 +5,7 @@
 ### Carteiras do grupo:
 
 https://atronee.github.io/A2-IC-Python/
+
 https://atronee.github.io/A2-IC-Python/Carteira%20Fernando
+
 https://atronee.github.io/A2-IC-Python/Carteira%20Jo%C3%A3o

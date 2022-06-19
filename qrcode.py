@@ -1,7 +1,7 @@
 import qrcode
 
-valor = 1000
-data =f'O valor da carteira é R${valor}'
-img = qrcode.make(data)
+def criar_img(_valor):
+    data =f'O valor da carteira é R${_valor}'
+    img = qrcode.make(data)
 
-img.save('qrcode.png')
+    img.save('qrcode.png')

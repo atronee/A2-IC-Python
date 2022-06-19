@@ -35,4 +35,4 @@ Este módulo utiliza yfinance.
 
 Módulo responsável pela criação da tabela Excel com o valor e a quantidade de cada ativo da carteira de investimentos, pela criação dos gráficos relacionados aos ativos da mesma carteira e pela criação do QRcode com o valor total da carteira. 
 
-Este módulo utiliza openpyx, datetime e qrcode.
+Este módulo utiliza openpyxl, datetime, qrcode e Image.
